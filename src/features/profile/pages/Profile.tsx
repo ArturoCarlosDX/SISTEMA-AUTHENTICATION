@@ -1,12 +1,18 @@
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { LogOut, Mail, Phone, User, Globe, Shield } from 'lucide-react';
-import { toast } from 'sonner';
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { LogOut, Mail, Phone, User, Globe, Shield } from "lucide-react";
+import { toast } from "sonner";
 
 export const Profile = () => {
   const { user, logout } = useAuth();
@@ -15,10 +21,10 @@ export const Profile = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      toast.success('Sesión cerrada exitosamente');
-      navigate('/login');
+      toast.success("Sesión cerrada exitosamente");
+      navigate("/login");
     } catch (error) {
-      toast.error('Error al cerrar sesión');
+      toast.error("Error al cerrar sesión");
     }
   };
 
@@ -31,81 +37,100 @@ export const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background p-4 py-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <Card className="shadow-lg">
-          <CardHeader>
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <Avatar className="h-20 w-20">
-                <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                  {getInitials()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-center sm:text-left flex-1">
-                <CardTitle className="text-2xl">{user.name}</CardTitle>
-                <CardDescription className="text-base">@{user.user_name}</CardDescription>
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0f0f0f] via-[#0f0f0f] to-[#0b0b0b] flex items-center justify-center p-6">
+      <div className="w-full max-w-xl">
+        <Card className="bg-[#151515] shadow-2xl border-0">
+          <CardHeader className="px-8 pt-8">
+            <div className="flex flex-col items-center">
+              <div className="h-16 w-16 rounded-full bg-[#00ff33] flex items-center justify-center shadow-md mb-4">
+                <span className="font-extrabold text-black">do</span>
               </div>
-              <Badge variant="secondary" className="text-sm px-4 py-2">
-                <Shield className="mr-2 h-4 w-4" />
-                {user.role.name}
-              </Badge>
+              <CardTitle className="text-2xl text-[#00ff33] tracking-wide">
+                PERFIL DE USUARIO
+              </CardTitle>
+              <CardDescription className="text-sm text-muted-foreground mt-1">
+                Información de tu cuenta
+              </CardDescription>
             </div>
           </CardHeader>
-          <Separator />
-          <CardContent className="pt-6">
+
+          <CardContent className="px-8 pb-8 pt-6">
             <div className="grid gap-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Información de Contacto</h3>
-                  
-                  <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Email</p>
-                      <p className="text-base">{user.email}</p>
-                    </div>
+                  <label className="text-xs text-muted-foreground uppercase tracking-wide">
+                    Nombre
+                  </label>
+                  <div className="bg-[#2a2a2a] rounded-md px-4 py-3 text-white">
+                    {user.name}
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Teléfono</p>
-                      <p className="text-base">{user.phone}</p>
-                    </div>
+                  <label className="text-xs text-muted-foreground uppercase tracking-wide mt-2">
+                    Correo electrónico
+                  </label>
+                  <div className="bg-[#2a2a2a] rounded-md px-4 py-3 text-white break-words">
+                    {user.email}
+                  </div>
+
+                  <label className="text-xs text-muted-foreground uppercase tracking-wide mt-2">
+                    Rol
+                  </label>
+                  <div className="flex items-center">
+                    <span className="inline-flex items-center bg-[#00ff33] text-black rounded-full px-4 py-2 font-medium">
+                      {user.role.name}
+                    </span>
+                  </div>
+
+                  <label className="text-xs text-muted-foreground uppercase tracking-wide mt-2">
+                    ID de usuario
+                  </label>
+                  <div className="bg-[#2a2a2a] rounded-md px-4 py-3 text-white">
+                    {user.id}
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Información Adicional</h3>
-                  
-                  <div className="flex items-start gap-3">
-                    <User className="h-5 w-5 text-muted-foreground mt-0.5" />
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-24 w-24">
+                      <AvatarFallback className="bg-[#00ff33] text-black text-3xl font-bold flex items-center justify-center">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">ID de Usuario</p>
-                      <p className="text-base">{user.id}</p>
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Nombre de usuario
+                      </p>
+                      <p className="text-base text-white">@{user.user_name}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <Globe className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">País</p>
-                      <p className="text-base">{user.country.name}</p>
-                    </div>
+                  <label className="text-xs text-muted-foreground uppercase tracking-wide mt-2">
+                    Teléfono
+                  </label>
+                  <div className="bg-[#2a2a2a] rounded-md px-4 py-3 text-white">
+                    {user.phone}
+                  </div>
+
+                  <label className="text-xs text-muted-foreground uppercase tracking-wide mt-2">
+                    País
+                  </label>
+                  <div className="bg-[#2a2a2a] rounded-md px-4 py-3 text-white">
+                    {user.country.name}
                   </div>
                 </div>
               </div>
 
-              <Separator />
+              <div>
+                <Separator />
+              </div>
 
-              <div className="flex justify-end">
-                <Button 
-                  variant="destructive" 
+              <div>
+                <Button
                   onClick={handleLogout}
-                  className="w-full sm:w-auto"
+                  className="w-full bg-[#00ff33] hover:bg-[#00e02d] text-black border-0"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  Cerrar Sesión
+                  Cerrar sesión
                 </Button>
               </div>
             </div>
