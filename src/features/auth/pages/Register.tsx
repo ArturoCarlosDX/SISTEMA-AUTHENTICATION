@@ -68,8 +68,8 @@ export const Register = () => {
       };
 
       await authService.register(registerData);
-      toast.success("¡Registro exitoso! Ahora puedes iniciar sesión");
-      navigate("/login");
+      toast.success("¡Registro exitoso! Bienvenido al blog");
+      navigate("/posts");
     } catch (error: unknown) {
       console.error("Register error:", error);
 
@@ -100,7 +100,7 @@ export const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-[#0b0f14] via-[#0f1418] to-[#0b0f14] p-6">
-      <Card className="w-full max-w-2xl bg-[#111316] border border-[#1f2933] shadow-2xl">
+      <Card className="w-full max-w-2xl bg-[#111316]/60 border border-[#1f2933] shadow-2xl backdrop-blur-sm">
         <CardHeader className="pt-8 pb-4 text-center">
           <div className="mx-auto mb-4 h-10 w-10 rounded-full bg-[#2b3aef] flex items-center justify-center text-white">
             <svg

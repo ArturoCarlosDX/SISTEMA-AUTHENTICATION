@@ -17,7 +17,7 @@ export const PublicRoute = ({ children }: PublicRouteProps) => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to="/profile" replace />;
+    return <Navigate to="/posts" replace />;
   }
 
   return <>{children}</>;
