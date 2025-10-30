@@ -24,19 +24,19 @@ export default function LogoutButton() {
   return (
     <div className="fixed top-4 right-4 z-50">
       <div className="flex items-center gap-2">
-        {/* Botón 1: Ajustes */}
+        {/* Botón 1: Productos (navega a /producto) */}
         <Button
           variant="ghost"
           onClick={() => {
-            // Ir a /contact (o volver a /posts si ya estamos en /contact)
-            if (location.pathname === "/contact") navigate("/posts");
-            else navigate("/contact");
+            // Ir a /producto (o volver a /posts si ya estamos en /producto)
+            if (location.pathname === "/producto") navigate("/posts");
+            else navigate("/producto");
           }}
           className="flex items-center gap-2"
-          aria-label="Contacto"
+          aria-label="Productos"
         >
           <Settings className="h-4 w-4" />
-          Contacto
+          Productos
         </Button>
 
         {/* Botón 2: Perfil (toggle entre /profile y /posts según la ruta actual) */}

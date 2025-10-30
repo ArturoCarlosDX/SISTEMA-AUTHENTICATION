@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const BASE_URL = 'https://reflexoperu-v3.marketingmedico.vip/backend/public/api';
+export const BASE_URL = 'https://reflexoperu-v3.marketingmedico.vip/backend/public/api';
 
 const api = axios.create({
   baseURL: BASE_URL,

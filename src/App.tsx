@@ -11,6 +11,7 @@ import { PublicRoute } from "./components/PublicRoute";
 import Index from "./pages/Index";
 import Posts from "./pages/Posts";
 import Contact from "./pages/Contact";
+import Producto from "./pages/Producto";
 import PostDetail from "./pages/PostDetail";
 import { Login } from "./features/auth/pages/Login";
 import { Register } from "./features/auth/pages/Register";
@@ -56,6 +57,7 @@ const App = () => (
             />
             <Route path="/posts" element={<Posts />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/producto" element={<Producto />} />
             <Route path="/posts/:id" element={<PostDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

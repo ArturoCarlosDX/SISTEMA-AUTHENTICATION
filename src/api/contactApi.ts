@@ -1,6 +1,8 @@
 import axios from "axios";
+import { BASE_URL } from "@/features/auth/services/authService";
 
-const api = axios.create({ baseURL: "/api", timeout: 5000 });
+// Use backend base URL declared in authService. BASE_URL should not include a trailing slash.
+const api = axios.create({ baseURL: BASE_URL, timeout: 5000 });
 
 const QUEUE_KEY = "contact_queue_v1";
 const METRICS_KEY = "contact_metrics_v1";
@@ -87,7 +89,7 @@ async function doPost(payload: ContactPayload, idempotencyKey: string) {
   const res = await api.post("/contact", payload, { headers: { "Idempotency-Key": idempotencyKey } });
   const t1 = performance.now();
   trackMetric({ ok: true, latency: t1 - t0 });
-  return res.data;
+  return res;
 }
 
 export async function sendContact(payload: ContactPayload, idempotencyKey: string) {
@@ -107,7 +109,20 @@ export async function sendContact(payload: ContactPayload, idempotencyKey: strin
       const res = await api.post("/contact", payload, { headers: { "Idempotency-Key": idempotencyKey }, timeout: 3000 });
       const t1 = performance.now();
       trackMetric({ ok: true, latency: t1 - t0 });
-      return res.data;
+
+      // Normalize responses:
+      // - If server returns HTTP 202 or body.status === 'queued' -> treat as queued
+      // - Any 2xx without queued -> treat as sent
+      if (res.status === 202 || (res.data && res.data.status === "queued")) {
+        return { status: "queued", ...(res.data || {}) };
+      }
+
+      if (res.status >= 200 && res.status < 300) {
+        return { status: "sent", ...(res.data || {}) };
+      }
+
+      // Fallback: treat as queued
+      return { status: "queued", ...(res.data || {}) };
     } catch (err: unknown) {
       attempt++;
       trackMetric({ ok: false });

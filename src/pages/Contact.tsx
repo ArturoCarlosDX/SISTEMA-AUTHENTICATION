@@ -34,6 +34,9 @@ export default function Contact() {
   );
   const { errors, isSubmitting } = formState;
   const toast = useToast();
+  const [serverStatus, setServerStatus] = React.useState<
+    null | "queued" | "sent" | "error"
+  >(null);
 
   React.useEffect(() => {
     initContactQueue();
@@ -41,22 +44,28 @@ export default function Contact() {
 
   const onSubmit = async (data: FormData) => {
     const idempotencyKey = crypto.randomUUID();
+    setServerStatus(null);
     try {
       const result = await sendContact(
         data as unknown as ContactPayload,
         idempotencyKey
       );
       if (result?.status === "queued") {
-        toast.toast({
-          title: "Encolado",
-          description:
-            "Tu mensaje se encoló y se enviará cuando haya conexión.",
-        });
-      } else {
+        // Show inline queued status instead of floating toast
+        setServerStatus("queued");
+      } else if (result?.status === "sent") {
         toast.toast({
           title: "Enviado",
           description: "Tu mensaje se envió correctamente.",
         });
+        setServerStatus("sent");
+      } else {
+        // Unknown response - treat as sent for UX
+        toast.toast({
+          title: "Enviado",
+          description: "Tu mensaje se envió correctamente.",
+        });
+        setServerStatus("sent");
       }
       reset();
     } catch (err) {
@@ -64,10 +73,12 @@ export default function Contact() {
         title: "Error",
         description: "No se pudo enviar el mensaje.",
       });
+      setServerStatus("error");
     }
   };
 
   const messageValue = watch("message") || "";
+  const consentValue = !!watch("consent");
 
   return (
     <div className="min-h-screen flex items-start md:items-center justify-center py-12 px-4">
@@ -137,15 +148,49 @@ export default function Contact() {
                   />
                 </label>
 
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" {...register("consent")} />
-                  <span>Acepto la política de privacidad</span>
+                <label className="flex flex-col">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      {...register("consent")}
+                      aria-invalid={!!errors.consent}
+                    />
+                    <span>Acepto la política de privacidad</span>
+                  </label>
+                  {errors.consent && (
+                    <small className="text-destructive">
+                      {String(errors.consent.message)}
+                    </small>
+                  )}
                 </label>
 
                 <div>
-                  <Button type="submit" disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting || !consentValue}
+                  >
                     {isSubmitting ? "Enviando…" : "Enviar"}
                   </Button>
+                  {!consentValue && (
+                    <div className="mt-2 text-sm text-destructive">
+                      Debes aceptar la política de privacidad para enviar.
+                    </div>
+                  )}
+                  {serverStatus === "queued" && (
+                    <div className="mt-3 rounded-md bg-yellow-900/40 p-3 text-sm text-yellow-200">
+                      Tu mensaje se encoló y se enviará cuando haya conexión.
+                    </div>
+                  )}
+                  {serverStatus === "sent" && (
+                    <div className="mt-3 rounded-md bg-green-900/40 p-3 text-sm text-green-200">
+                      Tu mensaje fue enviado correctamente.
+                    </div>
+                  )}
+                  {serverStatus === "error" && (
+                    <div className="mt-3 rounded-md bg-destructive/20 p-3 text-sm text-destructive-foreground">
+                      Ocurrió un error al intentar enviar tu mensaje.
+                    </div>
+                  )}
                 </div>
               </form>
             </div>
